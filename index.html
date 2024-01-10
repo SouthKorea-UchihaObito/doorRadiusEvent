@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인터렉티브 문 열고 나오는 애니메이션</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <style>
+        .stage {
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            width:100vw;
+            height:100vh;
+            background:#333;
+        }
+        .door {
+            position:relative;
+            width:100px;
+            height:150px;
+			cursor:pointer;
+        }
+        .door-back {
+            position:absolute;
+            left:0;
+            top:0;
+            width:100%;
+            height:100%;
+            background:#000;
+			overflow:hidden;
+        }
+        .radius {
+            position:absolute;
+            left:0;
+            bottom:0;
+            width:50px;
+            height:50px;
+			border-radius:50%;
+			transform:translate3d(200%, 0, 0);
+			transition:0.5s 0.5s;
+        }
+        .door:nth-child(1) .radius {background:red;}
+        .door:nth-child(2) .radius {background:green;}
+        .door:nth-child(3) .radius {background:blue;}
+        .door-body {
+            position:absolute;
+            left:0;
+            top:0;
+            width:100%;
+            height:100%;
+			transition:0.5s;
+        }
+        .door:nth-child(1) .door-body {background:rgba(255, 0, 0, 0.7);}
+        .door:nth-child(2) .door-body {background:rgba(0, 255, 0, 0.7);}
+        .door:nth-child(3) .door-body {background:rgba(0, 0, 255, 0.7);}
+		.door-opened .door-body {
+			/* 부모에 줬을때 , 본체에 줬을때 보는 시각이 다르다. */ 
+			transform:perspective(800px) rotateY(-110deg);
+			transform-origin:0%;
+		}
+		.door-opened .radius {
+			transform:translate3d(50%, 0, 0);
+		}
+    </style>
+</head>
+<body>
+    <div class="stage">
+        <div class="door">
+            <div class="door-back">
+				<div class="radius"></div>
+			</div>
+            <div class="door-body"></div>
+        </div>
+        <div class="door">
+            <div class="door-back">
+				<div class="radius"></div>
+			</div>
+            <div class="door-body"></div>
+        </div>
+        <div class="door">
+            <div class="door-back">
+				<div class="radius"></div>
+			</div>
+            <div class="door-body"></div>
+        </div>
+    </div>
+	<script>
+		(function(){
+			// 여러개 중에 하나만 활성화 하는 패턴 연습 예제
+			const stageElem = document.querySelector('.stage');
+			let currentItem; // let 수시로 바뀔수 있기 때문 / 현재 활성화된 아이템을 저장 변수로 저장
+			// 활성화
+			function activete(elem) {
+				elem.classList.add('door-opened');
+				currentItem = elem; // 지금 선택한걸 활성화
+			}
+ 			// 비활성화
+			function inactivete(elem) {
+				elem.classList.remove('door-opened'); // 활성화 되있으면 비활성화시키고
+			}
+			function doorHandler(e) {
+				const targetElem = e.target;
+				if(currentItem){
+					inactivete(currentItem)
+				}
+				// targetElem 가 door-body 라는 class를 갖고 있다면 실행
+				if(targetElem.classList.contains('door-body')){
+					activete(targetElem.parentNode);
+				}
+			}
+			stageElem.addEventListener('click', doorHandler);
+			
+			// 시작될때 문열리게 할수도 있음
+			// activete(document.querySelectorAll('.door')[0]);
+		})();
+	</script>
+</body>
+</html>
